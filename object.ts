@@ -5,6 +5,7 @@ export const createObject = (
   id: string,
   templateId: string,
   path: string,
+  distThreshold: number,
   properties: Record<string, unknown>,
 ): Record<string, unknown> => {
   const imgUrl = createImgUrl(path);
@@ -16,6 +17,7 @@ export const createObject = (
     id,
     x,
     y,
+    distThreshold,
     normal: imgUrl,
     highlighted: imgUrl,
     templateId,

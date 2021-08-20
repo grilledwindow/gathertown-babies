@@ -1,4 +1,3 @@
-// import { readCSV } from "https://deno.land/x/csv/mod.ts";
 import { createObject, getTakenPositions } from "./object.ts";
 
 const TEXT = "Abram was eighty-six years old when Hagar bore him Ishmael.";
@@ -7,17 +6,18 @@ const FILE = "./diapers.csv";
 const IMG_PATH = "diaper.png";
 const TEMPLATE_ID = "diaper";
 const TYPE = 6;
+const DIST_THRESHOLD = 1;
 
 export const createNewDiapers = (
   objects: Array<Record<string, unknown>>,
   width: number,
   height: number,
-) => {
+): Array<Record<string, unknown>> => {
   Deno.writeTextFileSync(FILE, "id,letter,x,y\n");
 
   const newObjects = new Array<Record<string, unknown>>();
   const taken = getTakenPositions(objects);
-  const diapers = new Set<[number, number]>();
+  const diapers = new Set<[number, number]>(); // For checking proximity between diapers
   diapers.add([10, 10]);
 
   let wordCount = 10;
@@ -36,7 +36,8 @@ export const createNewDiapers = (
       }
 
       const [x, y] = position;
-      const id = "" + wordCount + Math.floor(Math.random() * 10000);
+      const id = wordCount +
+        String(Math.floor(Math.random() * 10000)).padStart(4, "0");
 
       Deno.writeTextFileSync(FILE, `${id},${char},${x},${y}\n`, {
         append: true,
@@ -49,6 +50,7 @@ export const createNewDiapers = (
         `diaper-${id}`,
         TEMPLATE_ID,
         IMG_PATH,
+        DIST_THRESHOLD,
         {
           message: id,
         },
@@ -73,7 +75,6 @@ export const createExistingDiapers = (
 
   for (const line of lines) {
     if (line === "") {
-      console.log(line);
       continue;
     }
 
@@ -82,11 +83,71 @@ export const createExistingDiapers = (
     const y = _y as unknown as number;
 
     objects.push(
-      createObject(x, y, TYPE, `diaper-${id}`, TEMPLATE_ID, IMG_PATH, {
-        message: id,
-      }),
+      createObject(
+        x,
+        y,
+        TYPE,
+        `diaper-${id}`,
+        TEMPLATE_ID,
+        IMG_PATH,
+        DIST_THRESHOLD,
+        {
+          message: id,
+        },
+      ),
     );
   }
+};
+
+// Create fake diapers
+export const createFakeDiapers = (
+  objects: Array<Record<string, unknown>>,
+  width: number,
+  height: number,
+  amount: number,
+  isNote: boolean,
+): Array<Record<string, unknown>> => {
+  let type = 0;
+  let template = TEMPLATE_ID + "-fake";
+  let properties = {};
+  if (isNote) {
+    type = TYPE;
+    template += "-message";
+    properties = {
+      message: "It's a fake!",
+    };
+  }
+
+  const newObjects = new Array<Record<string, unknown>>();
+  const taken = getTakenPositions(objects);
+  const diapers = new Set<[number, number]>(); // For checking proximity between diapers
+  diapers.add([10, 10]);
+
+  for (let i = 0; i < amount; i++) {
+    let position;
+    while (true) {
+      position = generatePosition(width, height);
+      if (
+        !taken.has(position) && !diapers.has(position) &&
+        isDiaperFar(diapers, position, 3)
+      ) {
+        diapers.add(position);
+        break;
+      }
+    }
+    const [x, y] = position;
+    newObjects.push(createObject(
+      x,
+      y,
+      type,
+      `diaper-${x}x${y}`,
+      template,
+      IMG_PATH,
+      DIST_THRESHOLD,
+      properties,
+    ));
+  }
+  return newObjects;
 };
 
 // Generates a random [x, y] position
@@ -119,7 +180,7 @@ export const clearAllDiapers = (
   let lastDiaperIndex = 0;
   let diaperCount = 0;
   for (let i = 0; i < objects.length; i++) {
-    if (objects[i].templateId === "diaper") {
+    if ((objects[i].templateId as string).includes("diaper", 0)) {
       lastDiaperIndex = i;
       diaperCount++;
     }

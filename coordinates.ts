@@ -21,6 +21,7 @@ export const createCoordinates = (
         TEMPLATE_ID,
         id,
         `${DIR}/${id}.png`,
+        0,
         {},
       );
       objects.push(coordinates);

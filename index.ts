@@ -5,6 +5,7 @@ import {
   clearAllDiapers,
   createExistingDiapers,
   createNewDiapers,
+  createFakeDiapers
 } from "./diapers.ts";
 
 const X_STEP = 20;
@@ -36,8 +37,20 @@ createPNGs(width, height, X_STEP, Y_STEP); // Create the coordinate images
 createCoordinates(mapContent.objects, width, height, X_STEP, Y_STEP);
 
 clearAllDiapers(mapContent.objects); // Remove all diapers
+
+// Create new diapers - creates new CSV too
 const diapers = createNewDiapers(mapContent.objects, width, height);
 mapContent.objects.push(...diapers);
+
+// Create diapers from existing CSV
 // createExistingDiapers(mapContent.objects);
+
+// Create fake diapers without notes
+let fakeDiapers = createFakeDiapers(mapContent.objects, width, height, 1000, false);
+mapContent.objects.push(...fakeDiapers);
+
+// Create fake diapers with notes
+fakeDiapers = createFakeDiapers(mapContent.objects, width, height, 1000, true);
+mapContent.objects.push(...fakeDiapers);
 
 setMap(mapContent);

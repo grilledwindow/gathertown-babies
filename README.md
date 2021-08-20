@@ -12,8 +12,7 @@ export const MAP_ID = 'your-map-id'; // Room name, e.g. babies
 ```
 
 ## How it works
-This project is run using Deno:
-`deno run --allow-net --allow-read --allow-write index.ts`
+This project is run using Deno, using `./run` or `deno run --allow-net --allow-read --allow-write index.ts`.
 
 [ImageScript](https://deno.land/x/imagescript@1.2.9) was used to create the coordinate PNGs. The images are hosted using GitHub, in this same repository, accessed using the raw GitHub user content link, as such: [https://raw.githubusercontent.com/grilledwindow/gathertown-babies/main/img/250x125/0x0.png](https://raw.githubusercontent.com/grilledwindow/gathertown-babies/main/img/250x125/0x0.png). Therefore, the images must be pushed to the repository before you can see changes on your GatherTown space.
 

@@ -20,7 +20,7 @@ const createCoordinate = (
 ): Record<string, unknown> => {
   const id = `${x}x${y}`;
   const imgUrl =
-    `https://raw.githubusercontent.com/grilledwindow/gathertown_babies/main/img/250x125/${id}.png`;
+    `https://raw.githubusercontent.com/grilledwindow/gathertown-babies/main/img/250x125/${id}.png`;
   return {
     type: 0,
     width: 1,

@@ -1,6 +1,7 @@
 export const createObject = (
   x: number,
   y: number,
+  type: number,
   id: string,
   templateId: string,
   path: string,
@@ -8,7 +9,7 @@ export const createObject = (
 ): Record<string, unknown> => {
   const imgUrl = createImgUrl(path);
   return {
-    type: 0,
+    type,
     width: 1,
     height: 1,
     scale: 1,
@@ -30,6 +31,12 @@ const createImgUrl = (path: string) => {
   return `https://raw.githubusercontent.com/grilledwindow/gathertown-babies/main/img/${path}`;
 };
 
-const getTakenPositions = () => {
-  
-}
+export const getTakenPositions = (
+  objects: Array<Record<string, unknown>>,
+): Set<[number, number]> => {
+  const taken = new Set<[number, number]>();
+  for (const object of objects) {
+    taken.add([object.x as number, object.y as number]);
+  }
+  return taken;
+};

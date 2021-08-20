@@ -17,6 +17,7 @@ export const createCoordinates = (
       const coordinates = createObject(
         x,
         y,
+        0,
         TEMPLATE_ID,
         id,
         `${DIR}/${id}.png`,

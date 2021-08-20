@@ -1,6 +1,11 @@
 import { API_KEY, MAP_ID, SPACE_ID } from "./config.ts";
 import { createCoordinates } from "./coordinates.ts";
 import { createPNGs } from "./img.ts";
+import {
+  clearAllDiapers,
+  createExistingDiapers,
+  createNewDiapers,
+} from "./diapers.ts";
 
 const X_STEP = 20;
 const Y_STEP = 10;
@@ -29,5 +34,10 @@ mapContent.objects = []; // Empty objects. Only use if you want to remove all th
 
 createPNGs(width, height, X_STEP, Y_STEP); // Create the coordinate images
 createCoordinates(mapContent.objects, width, height, X_STEP, Y_STEP);
+
+clearAllDiapers(mapContent.objects); // Remove all diapers
+const diapers = createNewDiapers(mapContent.objects, width, height);
+mapContent.objects.push(...diapers);
+// createExistingDiapers(mapContent.objects);
 
 setMap(mapContent);

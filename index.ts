@@ -2,7 +2,7 @@ import { API_KEY, MAP_ID, SPACE_ID } from "./config.ts";
 import { createCoordinates } from "./coordinates.ts";
 import { createPNGs } from "./img.ts";
 
-const X_STEP = 25;
+const X_STEP = 20;
 const Y_STEP = 10;
 
 const setMap = (mapContent: Record<string, unknown>) => {

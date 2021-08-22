@@ -11,10 +11,11 @@ export const createBackground = (
   width: number,
   height: number,
 ) => {
-  const file = ensureImgDir() + "background.png";
+  const file = "background.png";
+  const path = ensureImgDir() + file;
   new Image(width * 32, height * 32).fill(0xffffffff).encode()
     .then((data: Uint8Array) => {
-      Deno.writeFile(file, data);
+      Deno.writeFile(path, data);
     });
   map.backgroundImagePath = createImgUrl(file);
 };

@@ -29,7 +29,7 @@ export const createObject = (
   };
 };
 
-const createImgUrl = (path: string) => {
+export const createImgUrl = (path: string) => {
   return `https://raw.githubusercontent.com/grilledwindow/gathertown-babies/main/img/${path}`;
 };
 

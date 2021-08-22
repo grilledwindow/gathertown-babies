@@ -1,12 +1,15 @@
 import { createObject, getTakenPositions } from "./object.ts";
 
-const TEXT = "Abram was eighty-six years old when Hagar bore him Ishmael.";
+const TEXT = "Abram Hagar Ishmael";
 const FILE = "./diapers.csv";
 
 const IMG_PATH = "diaper.png";
 const TEMPLATE_ID = "diaper";
 const TYPE = 6;
 const DIST_THRESHOLD = 1;
+
+const RADIUS = 10;
+const RADIUS_FAKE = 3;
 
 export const createNewDiapers = (
   objects: Array<Record<string, unknown>>,
@@ -18,7 +21,6 @@ export const createNewDiapers = (
   const newObjects = new Array<Record<string, unknown>>();
   const taken = getTakenPositions(objects);
   const diapers = new Set<[number, number]>(); // For checking proximity between diapers
-  diapers.add([10, 10]);
 
   let wordCount = 10;
   for (const word of TEXT.split(" ")) {
@@ -28,7 +30,7 @@ export const createNewDiapers = (
         position = generatePosition(width, height);
         if (
           !taken.has(position) && !diapers.has(position) &&
-          isDiaperFar(diapers, position, 20)
+          isDiaperFar(diapers, position, RADIUS)
         ) {
           diapers.add(position);
           break;
@@ -121,7 +123,6 @@ export const createFakeDiapers = (
   const newObjects = new Array<Record<string, unknown>>();
   const taken = getTakenPositions(objects);
   const diapers = new Set<[number, number]>(); // For checking proximity between diapers
-  diapers.add([10, 10]);
 
   for (let i = 0; i < amount; i++) {
     let position;
@@ -129,7 +130,7 @@ export const createFakeDiapers = (
       position = generatePosition(width, height);
       if (
         !taken.has(position) && !diapers.has(position) &&
-        isDiaperFar(diapers, position, 3)
+        isDiaperFar(diapers, position, RADIUS_FAKE)
       ) {
         diapers.add(position);
         break;

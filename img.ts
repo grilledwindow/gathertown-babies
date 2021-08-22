@@ -3,6 +3,22 @@ import {
   TextLayout,
 } from "https://deno.land/x/imagescript@1.2.9/ImageScript.js";
 
+import { createImgUrl } from "./object.ts";
+
+// Creates white background image for map
+export const createBackground = (
+  map: Record<string, unknown>,
+  width: number,
+  height: number,
+) => {
+  const file = ensureImgDir() + "background.png";
+  new Image(width * 32, height * 32).fill(0xffffffff).encode()
+    .then((data: Uint8Array) => {
+      Deno.writeFile(file, data);
+    });
+  map.backgroundImagePath = createImgUrl(file);
+};
+
 // Creates coordinate PNGs to be stored in ./img/{width}x{height}/{x}x{y}.png
 export const createPNGs = (
   width: number,
@@ -10,7 +26,7 @@ export const createPNGs = (
   x_step: number,
   y_step: number,
 ) => {
-  const dir: string = ensureImgDir(width, height);
+  const dir: string = ensureImgDir(`${width}x${height}`);
   const font: Uint8Array = Deno.readFileSync("./font/E4 2017.ttf");
   const textLayout = new TextLayout({
     maxWidth: 32,
@@ -43,8 +59,8 @@ const createText = (
 ): Image => Image.renderText(font, 16, coordinate + "", 0x000000ff, textLayout);
 
 // Creates img directory and directory to store images if they don't exist
-const ensureImgDir = (width: number, height: number) => {
-  const dir = `./img/${width}x${height}`;
+const ensureImgDir = (filePath?: string) => {
+  const dir = `./img/${filePath ?? ""}`;
   try {
     Deno.statSync("./img");
   } catch {

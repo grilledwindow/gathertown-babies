@@ -33,12 +33,38 @@ export const createImgUrl = (path: string) => {
   return `https://raw.githubusercontent.com/grilledwindow/gathertown-babies/main/img/${path}`;
 };
 
+export class TakenSet extends Set {
+  add(coordinates: [number, number]) {
+    return super.add(coordinates.toString());
+  }
+  has(coordinates: [number, number]) {
+    return super.has(coordinates.toString());
+  }
+  get(coordinates: string) {
+    const [x, y] = coordinates.split(',');
+    return ([Number(x), Number(y)])
+  }
+}
+
 export const getTakenPositions = (
   objects: Array<Record<string, unknown>>,
-): Set<[number, number]> => {
-  const taken = new Set<[number, number]>();
-  for (const object of objects) {
-    taken.add([object.x as number, object.y as number]);
+  includesTemplateName?: string,
+): TakenSet => {
+  const taken = new TakenSet();
+
+  if (!includesTemplateName) {
+    for (const object of objects) {
+      taken.add([object.x as number, object.y as number]);
+    }
+  } else {
+    for (const object of objects) {
+      if (
+        (object.templateId as string).includes(includesTemplateName as string)
+      ) {
+        taken.add([object.x as number, object.y as number]);
+      }
+    }
   }
+
   return taken;
 };

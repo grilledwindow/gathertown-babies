@@ -31,23 +31,24 @@ const response = await fetch(
 const mapContent = await response.json();
 
 const createNewMap = () => {
-  const [width, height] = [100, 50];
-  const nFakes = 50; // No. of fake diapers
+  // const [width, height] = [100, 50];
+  const [width, height] = mapContent.dimensions;
+  const nFakes = 60; // No. of fake diapers
 
-  createBackground(mapContent, width, height);
-  mapContent.objects = []; // Empty objects. Only use if you want to remove all the objects
+  // createBackground(mapContent, width, height);
+  // mapContent.objects = []; // Empty objects. Only use if you want to remove all the objects
 
-  createPNGs(width, height, X_STEP, Y_STEP); // Create the coordinate images
-  createCoordinates(mapContent.objects, width, height, X_STEP, Y_STEP);
+  // createPNGs(width, height, X_STEP, Y_STEP); // Create the coordinate images
+  // createCoordinates(mapContent.objects, width, height, X_STEP, Y_STEP);
 
   clearAllDiapers(mapContent.objects); // Remove all diapers
 
   // Create new diapers - creates new CSV too
-  const diapers = createNewDiapers(mapContent.objects, width, height);
-  mapContent.objects.push(...diapers);
+  // const diapers = createNewDiapers(mapContent.objects, width, height);
+  // mapContent.objects.push(...diapers);
 
   // Create diapers from existing CSV
-  // createExistingDiapers(mapContent.objects);
+  createExistingDiapers(mapContent.objects);
 
   // Create fake diapers without notes
   let fakeDiapers = createFakeDiapers(

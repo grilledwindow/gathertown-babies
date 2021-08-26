@@ -1,4 +1,4 @@
-import { createObject, getTakenPositions } from "./object.ts";
+import { createObject, getTakenPositions, TakenSet } from "./object.ts";
 
 const TEXT = "Abram Hagar Ishmael";
 const FILE = "./diapers.csv";
@@ -20,9 +20,10 @@ export const createNewDiapers = (
 
   const newObjects = new Array<Record<string, unknown>>();
   const taken = getTakenPositions(objects);
-  const diapers = new Set<[number, number]>(); // For checking proximity between diapers
+  addSpawnArea(taken);
+  const diapers = new TakenSet(); // For checking proximity between diapers
 
-  let wordCount = 10;
+  let wordCount = 10; // Start counting words from 10
   for (const word of TEXT.split(" ")) {
     for (const char of word) {
       let position;
@@ -121,8 +122,8 @@ export const createFakeDiapers = (
   }
 
   const newObjects = new Array<Record<string, unknown>>();
-  const taken = getTakenPositions(objects);
-  const diapers = new Set<[number, number]>(); // For checking proximity between diapers
+  const taken = addSpawnArea(getTakenPositions(objects));
+  const diapers = getTakenPositions(objects, "diaper"); // For checking proximity between diapers
 
   for (let i = 0; i < amount; i++) {
     let position;
@@ -160,19 +161,31 @@ const generatePosition = (width: number, height: number): [number, number] => {
 
 // Checks if a diaper is outside radius
 const isDiaperFar = (
-  diapers: Set<[number, number]>,
+  diapers: TakenSet,
   position: [number, number],
   radius: number,
 ): boolean => {
   const [x, y] = position;
   const r = radius;
 
-  for (const [x1, y1] of diapers) {
-    if (Math.abs(x1 - x) < r && Math.abs(y1 - y) < r) {
+  for (const coordinates of diapers) {
+    const [x1, y1] = coordinates.split(",");
+    if (Math.abs(Number(x1) - x) < r && Math.abs(Number(y1) - y) < r) {
       return false;
     }
   }
   return true;
+};
+
+// Add spawn area to a set
+const addSpawnArea = (set: TakenSet) => {
+  for (let x = 0; x < 6; x++) {
+    for (let y = 0; y < 6; y++) {
+      set.add([x, y]);
+    }
+  }
+
+  return set;
 };
 
 export const clearAllDiapers = (
